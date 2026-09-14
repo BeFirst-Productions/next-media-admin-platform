@@ -1,0 +1,43 @@
+model User {
+  id              String       @id @default(uuid())
+  name            String
+  email           String       @unique
+  passwordHash    String
+  role            Role
+  status          UserStatus   @default(ACTIVE)
+  phone           String?
+  avatarUrl       String?
+  lastLoginAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  refreshTokens        RefreshToken[]
+  assignedLeads         Lead[]              @relation("LeadAssignedStaff")
+  createdLeads          Lead[]              @relation("LeadCreatedBy")
+  proposals              Proposal[]          @relation("ProposalSalesStaff")
+  commissions            Commission[]
+  salesTargets           SalesTarget[]
+  notifications          Notification[]
+  auditLogs              AuditLog[]
+  systemLogs             SystemLog[]
+  loginLogs               LoginLog[]
+  leadNotes               LeadNote[]
+  leadActivities          LeadActivity[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model RefreshToken {
+  id         String   @id @default(uuid())
+  userId     String
+  tokenHash  String   @unique
+  revoked    Boolean  @default(false)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}

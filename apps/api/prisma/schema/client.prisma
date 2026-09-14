@@ -1,0 +1,33 @@
+model Client {
+  id                String   @id @default(uuid())
+  leadId            String?  @unique
+  companyName       String
+  industry          String?
+  location          String?
+  billingAddress    String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  lead      Lead?           @relation(fields: [leadId], references: [id])
+  contacts  ClientContact[]
+  proposals Proposal[]
+  contracts Contract[]
+  invoices  Invoice[]
+  payments  Payment[]
+
+  @@map("clients")
+}
+
+model ClientContact {
+  id        String   @id @default(uuid())
+  clientId  String
+  name      String
+  email     String?
+  phone     String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("client_contacts")
+}

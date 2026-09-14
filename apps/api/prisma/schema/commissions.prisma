@@ -1,0 +1,28 @@
+model CommissionRule {
+  id            String   @id @default(uuid())
+  name          String
+  rate          Decimal  @db.Decimal(5, 2)
+  appliesToRole Role     @default(SALES_STAFF)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  @@map("commission_rules")
+}
+
+model Commission {
+  id                String            @id @default(uuid())
+  staffId           String
+  proposalId        String?
+  invoiceId         String?
+  commissionRate    Decimal           @db.Decimal(5, 2)
+  commissionAmount  Decimal           @db.Decimal(14, 2)
+  status            CommissionStatus  @default(PENDING)
+  paidAt            DateTime?
+  createdAt         DateTime          @default(now())
+
+  staff    User      @relation(fields: [staffId], references: [id])
+  proposal Proposal? @relation(fields: [proposalId], references: [id])
+  invoice  Invoice?  @relation(fields: [invoiceId], references: [id])
+
+  @@map("commissions")
+}

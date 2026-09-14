@@ -1,0 +1,40 @@
+model Contract {
+  id             String         @id @default(uuid())
+  contractNumber String         @unique
+  proposalId     String?
+  clientId       String
+  title          String
+  content        String?
+  status         ContractStatus @default(DRAFT)
+  signedAt       DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  client   Client    @relation(fields: [clientId], references: [id])
+  proposal Proposal? @relation(fields: [proposalId], references: [id])
+
+  invoices Invoice[]
+
+  @@index([status])
+  @@map("contracts")
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  clientId      String
+  invoiceId     String
+  amount        Decimal       @db.Decimal(14, 2)
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  referenceNo   String?
+  paidAt        DateTime?
+  notes         String?
+  createdAt     DateTime      @default(now())
+
+  client  Client  @relation(fields: [clientId], references: [id])
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@index([invoiceId])
+  @@map("payments")
+}

@@ -1,0 +1,18 @@
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model Backup {
+  id        String       @id @default(uuid())
+  fileName  String
+  sizeBytes BigInt?
+  status    BackupStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+
+  @@map("backups")
+}

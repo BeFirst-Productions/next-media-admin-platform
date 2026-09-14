@@ -1,0 +1,28 @@
+{
+  "name": "next-digital-crm",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Next Digital CRM - monorepo (Next.js frontend + Express/TypeScript API + PostgreSQL/Prisma)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=apps/api",
+    "build:api": "npm run build --workspace=apps/api",
+    "start:api": "npm run start --workspace=apps/api",
+    "prisma:generate": "npm run prisma:generate --workspace=apps/api",
+    "prisma:migrate": "npm run prisma:migrate --workspace=apps/api",
+    "prisma:seed": "npm run prisma:seed --workspace=apps/api",
+    "prisma:studio": "npm run prisma:studio --workspace=apps/api",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"apps/**/src/**/*.ts\""
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -1,0 +1,11 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Import all schema modules
+// Note: Prisma doesn't support imports natively, 
+// so we'll use a build script to merge them

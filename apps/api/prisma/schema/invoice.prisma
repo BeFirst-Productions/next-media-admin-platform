@@ -1,0 +1,42 @@
+model Invoice {
+  id             String        @id @default(uuid())
+  invoiceNumber  String        @unique
+  clientId       String
+  proposalId     String?
+  contractId     String?
+  subtotal       Decimal       @db.Decimal(14, 2)
+  discount       Decimal       @db.Decimal(14, 2) @default(0)
+  tax            Decimal       @db.Decimal(14, 2) @default(0)
+  total          Decimal       @db.Decimal(14, 2)
+  amountPaid     Decimal       @db.Decimal(14, 2) @default(0)
+  issueDate      DateTime      @default(now())
+  dueDate        DateTime
+  paymentTerms   String?
+  status         InvoiceStatus @default(DRAFT)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  client   Client    @relation(fields: [clientId], references: [id])
+  proposal Proposal? @relation(fields: [proposalId], references: [id])
+  contract Contract? @relation(fields: [contractId], references: [id])
+
+  items    InvoiceItem[]
+  payments Payment[]
+  commissions Commission[]
+
+  @@index([status])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id        String  @id @default(uuid())
+  invoiceId String
+  name      String
+  quantity  Int     @default(1)
+  unitPrice Decimal @db.Decimal(14, 2)
+  total     Decimal @db.Decimal(14, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@map("invoice_items")
+}

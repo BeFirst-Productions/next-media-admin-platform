@@ -1,0 +1,72 @@
+model LeadSource {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  leads Lead[]
+
+  @@map("lead_sources")
+}
+
+model Lead {
+  id                  String     @id @default(uuid())
+  companyName         String
+  contactPerson       String
+  email               String
+  phone               String
+  location             String?
+  industry              String?
+  requiredServices      String?
+  expectedDeliveryDate DateTime?
+  projectDescription    String?
+  additionalNotes       String?
+  value                  Decimal?   @db.Decimal(14, 2)
+  status                 LeadStatus @default(NEW)
+
+  sourceId       String?
+  assignedStaffId String?
+  createdById     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  source         LeadSource? @relation(fields: [sourceId], references: [id])
+  assignedStaff  User?       @relation("LeadAssignedStaff", fields: [assignedStaffId], references: [id])
+  createdBy      User        @relation("LeadCreatedBy", fields: [createdById], references: [id])
+
+  notes      LeadNote[]
+  activities LeadActivity[]
+  proposals  Proposal[]
+  client     Client?
+
+  @@index([status])
+  @@index([assignedStaffId])
+  @@map("leads")
+}
+
+model LeadNote {
+  id        String   @id @default(uuid())
+  leadId    String
+  authorId  String
+  note      String
+  createdAt DateTime @default(now())
+
+  lead   Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id])
+
+  @@map("lead_notes")
+}
+
+model LeadActivity {
+  id        String   @id @default(uuid())
+  leadId    String
+  userId    String
+  activity  String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("lead_activities")
+}

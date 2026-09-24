@@ -5,6 +5,8 @@ model User {
   passwordHash    String
   role            Role
   status          UserStatus   @default(ACTIVE)
+  permissions     String[]     @default([])
+  settings        Json?        @default("{}")
   phone           String?
   avatarUrl       String?
   lastLoginAt     DateTime?

@@ -36,10 +36,29 @@ const envSchema = z.object({
 const parsed = envSchema.safeParse(process.env);
 
 if (!parsed.success) {
+  const fieldErrors = parsed.error.flatten().fieldErrors;
   // eslint-disable-next-line no-console
-  console.error("❌ Invalid environment configuration:");
+  console.error("\n  ╭────────────────────────────────────────────────────────────────────────────╮");
   // eslint-disable-next-line no-console
-  console.error(parsed.error.flatten().fieldErrors);
+  console.error("  │  [FAILED] INVALID ENVIRONMENT CONFIGURATION                                │");
+  // eslint-disable-next-line no-console
+  console.error("  ├────────────────────────────────────────────────────────────────────────────┤");
+  // eslint-disable-next-line no-console
+  console.error("  │  The following environment variables failed validation at boot:            │");
+  // eslint-disable-next-line no-console
+  console.error("  │                                                                            │");
+  for (const [field, errors] of Object.entries(fieldErrors)) {
+    const errorMsg = (errors ?? []).join("; ");
+    const line = `  • ${field.padEnd(25)} : ${errorMsg}`;
+    // eslint-disable-next-line no-console
+    console.error(`  │  ${line.padEnd(72).slice(0, 72)}  │`);
+  }
+  // eslint-disable-next-line no-console
+  console.error("  │                                                                            │");
+  // eslint-disable-next-line no-console
+  console.error("  │  Please check your apps/api/.env file and provide the required values.     │");
+  // eslint-disable-next-line no-console
+  console.error("  ╰────────────────────────────────────────────────────────────────────────────╯\n");
   process.exit(1);
 }
 

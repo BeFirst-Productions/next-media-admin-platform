@@ -4,8 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  // no url here — Prisma 7 configures the connection URL in prisma.config.ts,
+  // and your runtime client gets its own connection via the driver adapter.
 }
-
-// Import all schema modules
-// Note: Prisma doesn't support imports natively, 
-// so we'll use a build script to merge them

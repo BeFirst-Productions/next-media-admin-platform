@@ -4,14 +4,20 @@ import { signAccessToken, signRefreshToken, verifyRefreshToken } from "@/common/
 import { ConflictError, UnauthorizedError } from "@/common/errors/AppError";
 import { LoginInput, RegisterInput } from "@/modules/auth/auth.validation";
 import { recordAuditLog } from "@/modules/audit/audit.service";
+import { RoleName, ROLE_DEFAULT_PERMISSIONS } from "@/common/constants/roles";
 import crypto from "crypto";
 
 function hashToken(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-async function issueTokenPair(user: { id: string; email: string; role: "SUPER_ADMIN" | "SALES_STAFF" }) {
-  const accessToken = signAccessToken({ sub: user.id, email: user.email, role: user.role });
+async function issueTokenPair(user: { id: string; email: string; role: RoleName; permissions?: string[] }) {
+  const accessToken = signAccessToken({
+    sub: user.id,
+    email: user.email,
+    role: user.role,
+    permissions: user.permissions,
+  });
   const refreshToken = signRefreshToken(user.id);
 
   await prisma.refreshToken.create({
@@ -31,10 +37,28 @@ export async function registerUser(input: RegisterInput, actorId?: string) {
     throw new ConflictError("A user with this email already exists");
   }
 
+  const role = input.role as RoleName;
+  const permissions = input.permissions ?? ROLE_DEFAULT_PERMISSIONS[role] ?? [];
+
   const passwordHash = await hashPassword(input.password);
   const user = await prisma.user.create({
-    data: { name: input.name, email: input.email, passwordHash, role: input.role },
-    select: { id: true, name: true, email: true, role: true, status: true, createdAt: true },
+    data: {
+      name: input.name,
+      email: input.email,
+      passwordHash,
+      role: input.role,
+      permissions,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true,
+      permissions: true,
+      settings: true,
+      createdAt: true,
+    },
   });
 
   await recordAuditLog({
@@ -65,11 +89,21 @@ export async function loginUser(input: LoginInput, ipAddress?: string) {
     throw new UnauthorizedError("Your account is not active. Contact your administrator.");
   }
 
-  const tokens = await issueTokenPair(user);
+  const role = user.role as RoleName;
+  const permissions = user.permissions.length > 0 ? user.permissions : ROLE_DEFAULT_PERMISSIONS[role];
+
+  const tokens = await issueTokenPair({ ...user, role, permissions });
   await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
 
   return {
-    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      permissions,
+      settings: user.settings as Record<string, unknown> | null,
+    },
     ...tokens,
   };
 }
@@ -94,11 +128,24 @@ export async function refreshTokens(refreshToken: string) {
     throw new UnauthorizedError("Account no longer active");
   }
 
+  const role = user.role as RoleName;
+  const permissions = user.permissions.length > 0 ? user.permissions : ROLE_DEFAULT_PERMISSIONS[role];
+
   // Rotate: revoke the used refresh token, issue a brand new pair
   await prisma.refreshToken.update({ where: { id: stored.id }, data: { revoked: true } });
-  const tokens = await issueTokenPair(user);
+  const tokens = await issueTokenPair({ ...user, role, permissions });
 
-  return { user: { id: user.id, name: user.name, email: user.email, role: user.role }, ...tokens };
+  return {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      permissions,
+      settings: user.settings as Record<string, unknown> | null,
+    },
+    ...tokens,
+  };
 }
 
 export async function logoutUser(refreshToken: string) {

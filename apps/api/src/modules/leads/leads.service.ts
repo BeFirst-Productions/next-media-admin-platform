@@ -5,6 +5,8 @@ import { buildPaginationMeta, toSkipTake } from "@/common/utils/pagination";
 import { recordAuditLog } from "@/modules/audit/audit.service";
 import { notifyUser } from "@/modules/notifications/notifications.service";
 
+import { RoleName } from "@/common/constants/roles";
+
 interface ListLeadsParams {
   page: number;
   limit: number;
@@ -13,7 +15,7 @@ interface ListLeadsParams {
   industry?: string;
   search?: string;
   actorId: string;
-  actorRole: "SUPER_ADMIN" | "SALES_STAFF";
+  actorRole: RoleName;
 }
 
 export async function listLeads(params: ListLeadsParams) {

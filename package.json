@@ -8,14 +8,19 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:api": "npm run dev --workspace=apps/api",
-    "build:api": "npm run build --workspace=apps/api",
-    "start:api": "npm run start --workspace=apps/api",
-    "prisma:generate": "npm run prisma:generate --workspace=apps/api",
-    "prisma:migrate": "npm run prisma:migrate --workspace=apps/api",
-    "prisma:seed": "npm run prisma:seed --workspace=apps/api",
-    "prisma:studio": "npm run prisma:studio --workspace=apps/api",
-    "lint": "npm run lint --workspaces --if-present",
+    "dev": "pnpm dev:web",
+    "dev:all": "pnpm -r --parallel dev",
+    "dev:api": "pnpm --filter @next-digital-crm/api dev",
+    "dev:web": "pnpm --filter @next-digital-crm/web dev",
+    "build": "pnpm build:api && pnpm build:web",
+    "build:api": "pnpm --filter @next-digital-crm/api build",
+    "build:web": "pnpm --filter @next-digital-crm/web build",
+    "start": "pnpm start:api",
+    "prisma:generate": "pnpm --filter @next-digital-crm/api prisma:generate",
+    "prisma:migrate": "pnpm --filter @next-digital-crm/api prisma:migrate",
+    "prisma:seed": "pnpm --filter @next-digital-crm/api prisma:seed",
+    "prisma:studio": "pnpm --filter @next-digital-crm/api prisma:studio",
+    "lint": "pnpm -r --if-present lint",
     "format": "prettier --write \"apps/**/src/**/*.ts\""
   },
   "devDependencies": {
@@ -23,6 +28,7 @@
     "typescript": "^5.6.3"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
   }
 }

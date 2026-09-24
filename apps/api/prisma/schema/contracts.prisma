@@ -20,21 +20,3 @@ model Contract {
   @@map("contracts")
 }
 
-model Payment {
-  id            String        @id @default(uuid())
-  clientId      String
-  invoiceId     String
-  amount        Decimal       @db.Decimal(14, 2)
-  method        PaymentMethod
-  status        PaymentStatus @default(PENDING)
-  referenceNo   String?
-  paidAt        DateTime?
-  notes         String?
-  createdAt     DateTime      @default(now())
-
-  client  Client  @relation(fields: [clientId], references: [id])
-  invoice Invoice @relation(fields: [invoiceId], references: [id])
-
-  @@index([invoiceId])
-  @@map("payments")
-}

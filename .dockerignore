@@ -1,0 +1,33 @@
+# .dockerignore (Root)
+node_modules
+apps/*/node_modules
+packages/*/node_modules
+
+# Build artifacts
+dist
+apps/*/dist
+packages/*/dist
+.next
+.turbo
+
+# Environment and secrets
+.env
+.env*.local
+apps/*/.env*
+!apps/*/.env.example
+
+# Version control & IDE
+.git
+.gitignore
+.agents
+.gemini
+.idea
+.vscode
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# OS specific
+.DS_Store
+Thumbs.db

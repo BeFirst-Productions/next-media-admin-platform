@@ -6,6 +6,7 @@ export interface AccessTokenPayload {
   sub: string; // user id
   role: RoleName;
   email: string;
+  permissions?: string[];
 }
 
 export function signAccessToken(payload: AccessTokenPayload): string {

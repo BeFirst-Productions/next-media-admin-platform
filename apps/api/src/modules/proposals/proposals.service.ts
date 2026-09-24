@@ -25,8 +25,10 @@ const ALLOWED_TRANSITIONS: Record<ProposalStatus, ProposalStatus[]> = {
   EXPIRED: [],
 };
 
+import { RoleName } from "@/common/constants/roles";
+
 export async function listProposals(params: {
-  page: number; limit: number; status?: ProposalStatus; actorId: string; actorRole: "SUPER_ADMIN" | "SALES_STAFF";
+  page: number; limit: number; status?: ProposalStatus; actorId: string; actorRole: RoleName;
 }) {
   const { page, limit, status, actorId, actorRole } = params;
   const where = {
@@ -47,7 +49,7 @@ export async function listProposals(params: {
   return { items, meta: buildPaginationMeta(total, page, limit) };
 }
 
-export async function getProposalById(id: string, actorId: string, actorRole: "SUPER_ADMIN" | "SALES_STAFF") {
+export async function getProposalById(id: string, actorId: string, actorRole: RoleName) {
   const proposal = await prisma.proposal.findUnique({
     where: { id },
     include: {

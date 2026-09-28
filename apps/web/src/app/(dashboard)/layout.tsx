@@ -13,7 +13,7 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-surface-950 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-[#040814] text-slate-100 flex flex-col lg:flex-row w-full max-w-full overflow-x-hidden">
       {/* Sidebar (Desktop fixed / Mobile drawer) */}
       <DashboardSidebar
         isOpen={sidebarOpen}
@@ -21,12 +21,12 @@ export default function DashboardLayout({
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col lg:pl-64 min-w-0">
+      <div className="flex-1 flex flex-col lg:pl-64 min-w-0 w-full max-w-full overflow-x-hidden">
         <DashboardHeader
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-2.5 sm:p-4 lg:p-5 w-full min-w-0 max-w-full overflow-x-hidden">
           <ErrorBoundary>
             {children}
           </ErrorBoundary>

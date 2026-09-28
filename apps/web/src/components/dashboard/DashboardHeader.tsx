@@ -1,10 +1,21 @@
 "use client";
 
 import * as React from "react";
-import { LogOut, Bell, Search, Menu, Command } from "lucide-react";
+import {
+  Menu,
+  Search,
+  Calendar,
+  Bell,
+  Moon,
+  Sun,
+  Maximize2,
+  ChevronDown,
+  LogOut,
+  User,
+  Settings,
+} from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { Badge } from "@/components/ui/Badge";
-import { formatRole } from "@/lib/utils";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 interface DashboardHeaderProps {
   onToggleSidebar?: () => void;
@@ -12,104 +23,147 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
   const { user, logout, isLoading } = useAuth();
-  const [menuOpen, setMenuOpen] = React.useState(false);
-
-  const getInitials = (name?: string) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .substring(0, 2)
-      .toUpperCase();
-  };
+  const { theme, toggleTheme } = useTheme();
+  const [profileOpen, setProfileOpen] = React.useState(false);
 
   return (
-    <header className="h-16 border-b border-surface-800/80 bg-surface-950/70 backdrop-blur-xl px-4 lg:px-8 flex items-center justify-between sticky top-0 z-30">
-      {/* Left: Mobile Toggle & Search */}
-      <div className="flex items-center gap-3">
+    <header className="h-14 sm:h-16 bg-[#081020] border-b border-[#121f38] px-3 sm:px-4 lg:px-6 flex items-center justify-between sticky top-0 z-30 select-none w-full max-w-full">
+      {/* Left: Mobile Toggle & Software Title */}
+      <div className="flex items-center gap-2 sm:gap-3.5 min-w-0 flex-1 mr-2">
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden p-2 rounded-xl text-surface-400 hover:text-surface-100 hover:bg-surface-800 transition-colors"
+          className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-[#0f1d38] transition-colors shrink-0"
           aria-label="Toggle navigation"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-900/80 border border-surface-800/80 text-surface-400 text-xs w-64 hover:border-surface-700 transition-colors cursor-pointer">
-          <Search className="w-3.5 h-3.5" />
-          <span className="flex-1">Search leads, proposals...</span>
-          <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-surface-800 border border-surface-700 text-[10px] text-surface-300">
-            <Command className="w-2.5 h-2.5" /> K
-          </kbd>
+        <h1 className="text-xs sm:text-sm md:text-base font-semibold text-white tracking-tight truncate">
+          Sales &amp; Client Management Software
+        </h1>
+      </div>
+
+      {/* Center: Search Bar */}
+      <div className="hidden md:flex items-center justify-center flex-1 max-w-md mx-4">
+        <div className="w-full relative flex items-center bg-[#091426] border border-[#142444] rounded-lg px-3 py-1.5 transition-colors focus-within:border-[#00c5ff]/50">
+          <Search className="w-3.5 h-3.5 text-slate-400 mr-2 shrink-0" />
+          <input
+            type="text"
+            placeholder="Search clients, leads, invoices, packages..."
+            className="w-full bg-transparent text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none"
+          />
         </div>
       </div>
 
-      {/* Right: Notifications, Role, User Profile */}
-      <div className="flex items-center gap-3">
-        {/* Role Badge */}
-        {user?.role && (
-          <div className="hidden md:block">
-            <Badge role={user.role} />
-          </div>
-        )}
+      {/* Right Controls: Date Range, Notifications, Dark Mode, Maximize, User Profile */}
+      <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+        {/* Date Range Picker */}
+        <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#091426] border border-[#142444] text-xs text-slate-300 hover:border-[#1f3769] transition-colors cursor-pointer">
+          <span>01 May 2026 - 31 May 2026</span>
+          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+        </div>
 
-        {/* Notifications */}
+        {/* Notifications with Badge "12" */}
         <button
-          className="relative p-2 rounded-xl text-surface-400 hover:text-surface-100 hover:bg-surface-900 border border-transparent hover:border-surface-800 transition-colors"
-          aria-label="View notifications"
+          className="relative p-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#0f1d38] transition-colors"
+          aria-label="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500 shadow-glow" />
+          <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-rose-500 text-[9px] font-bold text-white flex items-center justify-center shadow-[0_0_8px_rgba(244,63,94,0.6)]">
+            12
+          </span>
         </button>
 
-        {/* User Profile Menu */}
+        {/* Dark / Light Mode Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#0f1d38] transition-all hidden sm:flex items-center justify-center cursor-pointer active:scale-95"
+          aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {theme === "dark" ? (
+            <Moon className="w-4 h-4 text-slate-300 hover:text-cyan-400 transition-colors" />
+          ) : (
+            <Sun className="w-4 h-4 text-amber-500 hover:text-amber-600 hover:rotate-45 transition-all" />
+          )}
+        </button>
+
+        {/* Maximize Icon */}
+        <button
+          onClick={() => {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+              document.exitFullscreen().catch(() => {});
+            }
+          }}
+          className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#0f1d38] transition-colors hidden sm:block"
+          aria-label="Toggle fullscreen"
+        >
+          <Maximize2 className="w-4 h-4" />
+        </button>
+
+        {/* User Profile Pill Menu */}
         <div className="relative">
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-surface-900/80 border border-transparent hover:border-surface-800/80 transition-all text-left"
-            aria-label="Open user menu"
+            onClick={() => setProfileOpen(!profileOpen)}
+            className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-lg hover:bg-[#0f1d38] transition-all text-left"
+            aria-label="User menu"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-400 text-white font-semibold text-xs flex items-center justify-center shadow-sm">
-              {getInitials(user?.name)}
+            <div className="w-7 h-7 rounded-full overflow-hidden border border-cyan-500/50 bg-slate-800 shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop&crop=face"
+                alt="Super Admin"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <div className="hidden sm:block text-left">
-              <p className="text-xs font-semibold text-surface-100 leading-tight">
-                {user?.name || "User"}
-              </p>
-              <p className="text-[10px] text-surface-400 leading-tight">
-                {user?.role ? formatRole(user.role) : ""}
-              </p>
-            </div>
+            <span className="hidden sm:inline text-xs font-semibold text-slate-200">
+              {user?.name || "Super Admin"}
+            </span>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
           </button>
 
           {/* Dropdown Menu */}
-          {menuOpen && (
+          {profileOpen && (
             <>
               <div
                 className="fixed inset-0 z-40"
-                onClick={() => setMenuOpen(false)}
+                onClick={() => setProfileOpen(false)}
               />
-              <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-surface-900 border border-surface-800/90 shadow-2xl p-2 z-50 animate-slide-up backdrop-blur-2xl">
-                <div className="px-3 py-2 border-b border-surface-800/70 mb-1">
-                  <p className="text-xs font-semibold text-surface-100 truncate">{user?.name}</p>
-                  <p className="text-[11px] text-surface-400 truncate">{user?.email}</p>
-                  <div className="mt-2 md:hidden">
-                    {user?.role && <Badge role={user.role} />}
-                  </div>
+              <div className="absolute right-0 mt-2 w-52 rounded-xl bg-[#091426] border border-[#16274e] shadow-2xl p-1.5 z-50 animate-slide-up backdrop-blur-xl">
+                <div className="px-3 py-2 border-b border-[#142444] mb-1">
+                  <p className="text-xs font-bold text-white truncate">{user?.name || "Super Admin"}</p>
+                  <p className="text-[10px] text-slate-400 truncate">{user?.email || "superadmin@next.com"}</p>
                 </div>
 
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    logout();
-                  }}
-                  disabled={isLoading}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition-colors"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Sign out</span>
-                </button>
+                <div className="space-y-0.5">
+                  <button
+                    onClick={() => setProfileOpen(false)}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:bg-[#0f1f3d] transition-colors"
+                  >
+                    <User className="w-3.5 h-3.5 text-slate-400" />
+                    <span>My Profile</span>
+                  </button>
+                  <button
+                    onClick={() => setProfileOpen(false)}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:bg-[#0f1f3d] transition-colors"
+                  >
+                    <Settings className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Settings</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setProfileOpen(false);
+                      logout();
+                    }}
+                    disabled={isLoading}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-rose-400 hover:bg-rose-950/30 transition-colors"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
               </div>
             </>
           )}

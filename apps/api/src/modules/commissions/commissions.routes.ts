@@ -1,18 +1,16 @@
 import { Router } from "express";
+import * as controller from "@/modules/commissions/commissions.controller";
 import { authenticate } from "@/common/middleware/authenticate";
 import { authorize } from "@/common/middleware/authorize";
 import { PERMISSIONS } from "@/common/constants/roles";
-import { ApiResponse } from "@/common/utils/ApiResponse";
 
-/**
- * Phase 5+ module (see project roadmap / README "Development Order").
- * Route shape and RBAC gate are wired up now so the frontend and other
- * modules (e.g. proposals -> contracts) can be built against a stable
- * contract, even before the full service/controller layer lands.
- */
 const router = Router();
-router.use(authenticate, authorize(PERMISSIONS.COMMISSIONS_MANAGE));
+router.use(authenticate);
 
-router.get("/", (_req, res) => ApiResponse.success(res, [], "commissions module scaffolded — list endpoint pending implementation"));
+router.get("/slabs", controller.getSlabs);
+router.get("/my-progress", controller.getMyProgress);
+router.get("/my-dashboard", controller.getMyDashboard);
+router.get("/my-report-list", controller.getMyReportList);
+router.get("/monthly-overview", authorize(PERMISSIONS.COMMISSIONS_MANAGE), controller.getMonthlyOverview);
 
 export default router;

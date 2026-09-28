@@ -40,9 +40,14 @@ export async function registerUser(input: RegisterInput, actorId?: string) {
   const role = input.role as RoleName;
   const permissions = input.permissions ?? ROLE_DEFAULT_PERMISSIONS[role] ?? [];
 
+  // Generate sequential USR-XXXX employee ID
+  const count = await prisma.user.count();
+  const employeeId = `USR-${String(count + 1).padStart(4, "0")}`;
+
   const passwordHash = await hashPassword(input.password);
   const user = await prisma.user.create({
     data: {
+      employeeId,
       name: input.name,
       email: input.email,
       passwordHash,

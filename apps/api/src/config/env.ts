@@ -20,6 +20,9 @@ const envSchema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
   BCRYPT_SALT_ROUNDS: z.coerce.number().int().min(4).max(20).default(12),
 
+  SUPERADMIN_EMAIL: z.string().email().default("superadmin@next.com"),
+  SUPERADMIN_PASSWORD: z.string().min(6).default("Admin@12345"),
+
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),

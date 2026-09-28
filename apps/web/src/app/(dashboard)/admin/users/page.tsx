@@ -15,8 +15,9 @@ import { apiClient } from "@/lib/api-client";
 const DEFAULT_USERS: UserDto[] = [
   {
     id: "usr-super-admin-01",
+    employeeId: "USR-1001",
     name: "Super Admin",
-    email: "admin@nextdigital.crm",
+    email: "admin@next.com",
     role: "SUPER_ADMIN",
     status: "ACTIVE",
     permissions: [...ROLE_DEFAULT_TEMPLATES.SUPER_ADMIN],
@@ -25,6 +26,7 @@ const DEFAULT_USERS: UserDto[] = [
   },
   {
     id: "usr-admin-02",
+    employeeId: "USR-1002",
     name: "Sarah (Operations Admin)",
     email: "admin.ops@nextdigital.crm",
     role: "ADMIN",
@@ -35,6 +37,7 @@ const DEFAULT_USERS: UserDto[] = [
   },
   {
     id: "usr-sales-03",
+    employeeId: "USR-1003",
     name: "Anaz (Sales Staff)",
     email: "staff@nextdigital.crm",
     role: "SALES_STAFF",
@@ -45,6 +48,7 @@ const DEFAULT_USERS: UserDto[] = [
   },
   {
     id: "usr-marketing-04",
+    employeeId: "USR-1004",
     name: "Elena (Marketing Lead)",
     email: "marketing@nextdigital.crm",
     role: "MARKETING_TEAM",
@@ -169,11 +173,10 @@ export default function UsersManagementPage() {
               <button
                 key={rf.id}
                 onClick={() => setRoleFilter(rf.id)}
-                className={`px-3 py-1 rounded-xl text-xs font-medium transition-all ${
-                  roleFilter === rf.id
+                className={`px-3 py-1 rounded-xl text-xs font-medium transition-all ${roleFilter === rf.id
                     ? "bg-brand-600 text-white shadow-sm"
                     : "bg-surface-800/60 text-surface-400 hover:text-surface-200"
-                }`}
+                  }`}
               >
                 {rf.label}
               </button>
@@ -216,11 +219,10 @@ export default function UsersManagementPage() {
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`px-2 py-0.5 rounded-md font-mono text-[11px] ${
-                              isSuper
+                            className={`px-2 py-0.5 rounded-md font-mono text-[11px] ${isSuper
                                 ? "bg-purple-950 border border-purple-500/40 text-purple-300"
                                 : "bg-surface-950 border border-surface-800 text-surface-300"
-                            }`}
+                              }`}
                           >
                             {isSuper ? "Wildcard (*)" : `${permsCount} actions`}
                           </span>

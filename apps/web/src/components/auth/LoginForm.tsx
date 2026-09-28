@@ -45,8 +45,8 @@ export function LoginForm() {
   const fillDemoAccount = (role: "super_admin" | "admin" | "staff" | "marketing") => {
     switch (role) {
       case "super_admin":
-        setValue("email", "admin@nextdigital.crm", { shouldValidate: true });
-        setValue("password", "Admin@12345", { shouldValidate: true });
+        setValue("email", process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL || "superadmin@next.com", { shouldValidate: true });
+        setValue("password", process.env.NEXT_PUBLIC_SUPERADMIN_PASSWORD || "Superadmin@123", { shouldValidate: true });
         break;
       case "admin":
         setValue("email", "admin.ops@nextdigital.crm", { shouldValidate: true });

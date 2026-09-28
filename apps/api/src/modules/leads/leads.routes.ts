@@ -5,7 +5,7 @@ import { authorize } from "@/common/middleware/authorize";
 import { validate } from "@/common/middleware/validate";
 import { PERMISSIONS } from "@/common/constants/roles";
 import {
-  addLeadNoteSchema, assignLeadSchema, createLeadSchema, idParamSchema, listLeadsSchema, updateLeadSchema,
+  addLeadNoteSchema, assignLeadSchema, convertLeadSchema, createLeadSchema, idParamSchema, listLeadsSchema, updateLeadSchema,
 } from "@/modules/leads/leads.validation";
 
 const router = Router();
@@ -15,6 +15,7 @@ router.get("/", authorize(PERMISSIONS.LEADS_VIEW_OWN), validate(listLeadsSchema)
 router.get("/:id", authorize(PERMISSIONS.LEADS_VIEW_OWN), validate(idParamSchema), controller.getById);
 router.post("/", authorize(PERMISSIONS.LEADS_MANAGE), validate(createLeadSchema), controller.create);
 router.patch("/:id", authorize(PERMISSIONS.LEADS_MANAGE), validate(updateLeadSchema), controller.update);
+router.post("/:id/convert", authorize(PERMISSIONS.LEADS_MANAGE), validate(convertLeadSchema), controller.convert);
 router.post("/:id/assign", authorize(PERMISSIONS.LEADS_MANAGE), validate(assignLeadSchema), controller.assign);
 router.post("/:id/notes", authorize(PERMISSIONS.LEADS_MANAGE), validate(addLeadNoteSchema), controller.addNote);
 router.delete("/:id", authorize(PERMISSIONS.LEADS_MANAGE), validate(idParamSchema), controller.remove);

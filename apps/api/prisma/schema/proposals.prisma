@@ -1,29 +1,27 @@
 model Proposal {
-  id                   String         @id @default(uuid())
-  proposalNumber       String         @unique
+  id                   String                  @id @default(uuid())
+  proposalNumber       String                  @unique
   leadId               String?
   clientId             String?
   salesStaffId         String
-  status               ProposalStatus @default(DRAFT)
-  subtotal             Decimal        @db.Decimal(14, 2)
-  discount             Decimal        @db.Decimal(14, 2) @default(0)
-  tax                  Decimal        @db.Decimal(14, 2) @default(0)
-  total                Decimal        @db.Decimal(14, 2)
+  status               ProposalStatus          @default(DRAFT)
+  subtotal             Decimal                 @db.Decimal(14, 2)
+  discount             Decimal                 @default(0) @db.Decimal(14, 2)
+  tax                  Decimal                 @default(0) @db.Decimal(14, 2)
+  total                Decimal                 @db.Decimal(14, 2)
   expectedDeliveryDate DateTime?
   projectDescription   String?
   notes                String?
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-
-  lead        Lead?    @relation(fields: [leadId], references: [id])
-  client      Client?  @relation(fields: [clientId], references: [id])
-  salesStaff  User     @relation("ProposalSalesStaff", fields: [salesStaffId], references: [id])
-
-  items         ProposalItem[]
-  statusHistory ProposalStatusHistory[]
-  invoices      Invoice[]
-  commissions   Commission[]
-  contracts     Contract[]
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  commissions          Commission[]
+  contracts            Contract[]
+  invoices             Invoice[]
+  items                ProposalItem[]
+  statusHistory        ProposalStatusHistory[]
+  client               Client?                 @relation(fields: [clientId], references: [id])
+  lead                 Lead?                   @relation(fields: [leadId], references: [id])
+  salesStaff           User                    @relation("ProposalSalesStaff", fields: [salesStaffId], references: [id])
 
   @@index([status])
   @@index([salesStaffId])
@@ -40,24 +38,22 @@ model ProposalItem {
   quantity   Int              @default(1)
   unitPrice  Decimal          @db.Decimal(14, 2)
   total      Decimal          @db.Decimal(14, 2)
-
-  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  package  Package? @relation("PackageProposalItems", fields: [packageId], references: [id])
-  addon    Addon?   @relation("AddonProposalItems", fields: [addonId], references: [id])
+  addon      Addon?           @relation("AddonProposalItems", fields: [addonId], references: [id])
+  package    Package?         @relation("PackageProposalItems", fields: [packageId], references: [id])
+  proposal   Proposal         @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   @@map("proposal_items")
 }
 
 model ProposalStatusHistory {
-  id         String         @id @default(uuid())
+  id         String          @id @default(uuid())
   proposalId String
   fromStatus ProposalStatus?
   toStatus   ProposalStatus
   changedBy  String
   note       String?
-  createdAt  DateTime       @default(now())
-
-  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+  proposal   Proposal        @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   @@map("proposal_status_history")
 }

@@ -89,6 +89,14 @@ export const PERMISSIONS = {
   USERS_CREATE: "users:create",
   USERS_EDIT: "users:edit",
   USERS_DELETE: "users:delete",
+  /// Special permission: grant/revoke another user's temporary Users-module authority
+  USERS_MANAGE_AUTHORITY: "users:manage_authority",
+
+  // Departments
+  DEPARTMENTS_LIST: "departments:list",
+  DEPARTMENTS_CREATE: "departments:create",
+  DEPARTMENTS_EDIT: "departments:edit",
+  DEPARTMENTS_DELETE: "departments:delete",
 
   // Compliance & Audit
   AUDIT_LIST: "audit:list",

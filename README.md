@@ -57,24 +57,24 @@ that the backend already owns.
 
 ## 3. Backend module map (`apps/api/src/modules`)
 
-| Module | Status | Notes |
-|---|---|---|
-| `auth` | ✅ built | register/login/refresh/logout, JWT access + rotating refresh tokens (httpOnly cookie) |
-| `users` | ✅ built | Super Admin only — list/update/deactivate |
-| `services` | ✅ built | service-categories, packages, package-features, addons — the dynamic pricing engine |
-| `leads` | ✅ built | full lifecycle, notes, activity log, assignment, notifications |
-| `clients` | ✅ built | client + contacts, linked from converted leads |
-| `proposals` | ✅ built | 4-step wizard backend: create → items/recalculate → submit → review → approve → send → accept. Calculation engine is fully server-authoritative. |
-| `contracts` | 🧱 scaffolded | route + RBAC gate wired; service/controller are Phase 5 |
-| `invoices` | 🧱 scaffolded | Phase 6 |
-| `payments` | 🧱 scaffolded | Phase 6 |
-| `commissions` | 🧱 scaffolded | Phase 7 — schema already stores a commission **rate snapshot** per the spec ("don't recalculate from the current staff rate later") |
-| `sales-targets` | 🧱 scaffolded | Phase 7/8 |
-| `reports` | 🧱 scaffolded | Phase 8 |
-| `notifications` | ✅ built | in-app notification rows, created by other modules (e.g. lead assignment) |
-| `audit-logs` | ✅ built (read) | every module writes here via `recordAuditLog()` |
-| `system-logs` | ✅ built (read) | technical/error events, Super Admin only |
-| `settings`, `backups` | 🧱 scaffolded | Phase 9 |
+| Module                | Status          | Notes                                                                                                                                            |
+| --------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `auth`                | ✅ built        | register/login/refresh/logout, JWT access + rotating refresh tokens (httpOnly cookie)                                                            |
+| `users`               | ✅ built        | Super Admin only — list/update/deactivate                                                                                                        |
+| `services`            | ✅ built        | service-categories, packages, package-features, addons — the dynamic pricing engine                                                              |
+| `leads`               | ✅ built        | full lifecycle, notes, activity log, assignment, notifications                                                                                   |
+| `clients`             | ✅ built        | client + contacts, linked from converted leads                                                                                                   |
+| `proposals`           | ✅ built        | 4-step wizard backend: create → items/recalculate → submit → review → approve → send → accept. Calculation engine is fully server-authoritative. |
+| `contracts`           | 🧱 scaffolded   | route + RBAC gate wired; service/controller are Phase 5                                                                                          |
+| `invoices`            | 🧱 scaffolded   | Phase 6                                                                                                                                          |
+| `payments`            | 🧱 scaffolded   | Phase 6                                                                                                                                          |
+| `commissions`         | 🧱 scaffolded   | Phase 7 — schema already stores a commission **rate snapshot** per the spec ("don't recalculate from the current staff rate later")              |
+| `sales-targets`       | 🧱 scaffolded   | Phase 7/8                                                                                                                                        |
+| `reports`             | 🧱 scaffolded   | Phase 8                                                                                                                                          |
+| `notifications`       | ✅ built        | in-app notification rows, created by other modules (e.g. lead assignment)                                                                        |
+| `audit-logs`          | ✅ built (read) | every module writes here via `recordAuditLog()`                                                                                                  |
+| `system-logs`         | ✅ built (read) | technical/error events, Super Admin only                                                                                                         |
+| `settings`, `backups` | 🧱 scaffolded   | Phase 9                                                                                                                                          |
 
 "Scaffolded" modules have their route file, RBAC permission, and a
 placeholder handler already wired into `routes/index.ts` — implementing
@@ -104,6 +104,7 @@ On any thrown error, anywhere in that chain:
 ## 5. Error & response contract
 
 **Success:**
+
 ```json
 {
   "success": true,
@@ -115,6 +116,7 @@ On any thrown error, anywhere in that chain:
 ```
 
 **Error:**
+
 ```json
 {
   "success": false,
@@ -154,9 +156,10 @@ npm run dev:api
 # -> http://localhost:4000/api/v1, health check at http://localhost:4000/health
 ```
 
-Seeded accounts (from `apps/api/prisma/seed.ts`):
-- Super Admin: `admin@nextdigital.crm` / `Admin@12345`
-- Sales Staff: `staff@nextdigital.crm` / `Staff@12345`
+Seeded accounts (configured via `.env` `SUPERADMIN_EMAIL` & `SUPERADMIN_PASSWORD`):
+
+- Super Admin: `superadmin@next.com` / `Admin@12345`
+- Sales Staff: `staff@nextdigital.com` / `Staff@12345`
 
 > This sandbox environment couldn't reach `binaries.prisma.sh` to download
 > the Prisma query engine, so `prisma generate` / an actual DB connection

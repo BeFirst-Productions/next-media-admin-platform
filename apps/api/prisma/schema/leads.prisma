@@ -2,45 +2,77 @@ model LeadSource {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now())
-
-  leads Lead[]
+  leads     Lead[]
 
   @@map("lead_sources")
 }
 
 model Lead {
-  id                  String     @id @default(uuid())
-  companyName         String
-  contactPerson       String
-  email               String
-  phone               String
-  location             String?
-  industry              String?
-  requiredServices      String?
-  expectedDeliveryDate DateTime?
-  projectDescription    String?
-  additionalNotes       String?
-  value                  Decimal?   @db.Decimal(14, 2)
-  status                 LeadStatus @default(NEW)
-
-  sourceId       String?
-  assignedStaffId String?
-  createdById     String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  source         LeadSource? @relation(fields: [sourceId], references: [id])
-  assignedStaff  User?       @relation("LeadAssignedStaff", fields: [assignedStaffId], references: [id])
-  createdBy      User        @relation("LeadCreatedBy", fields: [createdById], references: [id])
-
-  notes      LeadNote[]
-  activities LeadActivity[]
-  proposals  Proposal[]
-  client     Client?
+  id                     String           @id @default(uuid())
+  companyName            String
+  contactPerson          String
+  email                  String?
+  phone                  String?
+  location               String?
+  industry               String?
+  expectedDeliveryDate   DateTime?
+  projectDescription     String?
+  additionalNotes        String?
+  value                  Decimal?         @db.Decimal(14, 2)
+  status                 LeadStatus       @default(NEW)
+  sourceId               String?
+  assignedStaffId        String?
+  createdById            String
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+  designation            String?
+  whatsapp               String?
+  googleMapsLink         String?
+  hasWebsite             Boolean          @default(false)
+  websiteUrl             String?
+  websiteScore           Int?
+  websiteIssues          String?
+  instagramUrl           String?
+  instagramFollowers     Int?
+  instagramScore         Int?
+  facebookUrl            String?
+  hasGoogleBusiness      Boolean          @default(false)
+  googleRating           Float?
+  googleReviews          Int?
+  socialMediaIssues      String?
+  proposalValue          Decimal?         @db.Decimal(14, 2)
+  firstContactDate       DateTime?
+  contactMethod          ContactMethod?
+  followUpDate           DateTime?
+  meetingDate            DateTime?
+  remarks                String?
+  convertedAt            DateTime?
+  conversionStatus       ConversionStatus @default(PENDING)
+  customLeadId           String?          @unique
+  date                   DateTime         @default(now())
+  decisionMakerAvailable Boolean          @default(false)
+  instagramLastPostDate  DateTime?
+  instagramPosts         Int?
+  linkedInUrl            String?
+  proposalSent           Boolean          @default(false)
+  recommendedPackageId   String?
+  researchExecutiveId    String?
+  response               String?
+  servicesRequired       String?
+  client                 Client?
+  activities             LeadActivity[]
+  notes                  LeadNote[]
+  assignedStaff          User?            @relation("LeadAssignedStaff", fields: [assignedStaffId], references: [id])
+  createdBy              User             @relation("LeadCreatedBy", fields: [createdById], references: [id])
+  recommendedPackage     Package?         @relation("LeadRecommendedPackage", fields: [recommendedPackageId], references: [id])
+  researchExecutive      User?            @relation("LeadResearchExecutive", fields: [researchExecutiveId], references: [id])
+  source                 LeadSource?      @relation(fields: [sourceId], references: [id])
+  proposals              Proposal[]
 
   @@index([status])
+  @@index([conversionStatus])
   @@index([assignedStaffId])
+  @@index([researchExecutiveId])
   @@map("leads")
 }
 
@@ -50,9 +82,8 @@ model LeadNote {
   authorId  String
   note      String
   createdAt DateTime @default(now())
-
-  lead   Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  author User @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@map("lead_notes")
 }
@@ -61,12 +92,11 @@ model LeadActivity {
   id        String   @id @default(uuid())
   leadId    String
   userId    String
-  activity  String
   metadata  Json?
   createdAt DateTime @default(now())
-
-  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id])
+  activity  String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("lead_activities")
 }

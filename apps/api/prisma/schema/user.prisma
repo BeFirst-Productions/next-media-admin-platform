@@ -1,74 +1,44 @@
-model Department {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  users       User[]
-
-  @@map("departments")
-}
-
 model User {
-  id                        String                           @id @default(uuid())
-  name                      String
-  email                     String                           @unique
-  passwordHash              String
-  role                      Role
-  status                    UserStatus                       @default(ACTIVE)
-  phone                     String?
-  avatarUrl                 String?
-  lastLoginAt               DateTime?
-  createdAt                 DateTime                         @default(now())
-  updatedAt                 DateTime                         @updatedAt
-  /// Auto-generated display ID shown in UI, e.g. "USR-1001"
-  employeeId                String                           @unique
-  departmentId              String?
-  joiningDate               DateTime?
-  salesTarget               Decimal?                         @db.Decimal(15, 2)
-  commissionPercentage      Decimal?                         @db.Decimal(5, 2)
-  canManageUsers            Boolean                          @default(false)
-  manageUsersExpiresAt      DateTime?
-  currentMonthBonus         Decimal?                         @default(0) @db.Decimal(14, 2)
-  currentMonthCommission    Decimal?                         @default(0) @db.Decimal(14, 2)
-  currentMonthSales         Decimal?                         @default(0) @db.Decimal(14, 2)
-  currentSlabAssignedAt     DateTime?                        @default(now())
-  currentSlabId             String?
-  /// Granular module:action permissions assigned by Super Admin
-  permissions               String[]                         @default([])
-  /// UI/notification preferences stored as JSON blob
-  settings                  Json?                            @default("{}")
-  auditLogs                 AuditLog[]
-  commissions               Commission[]
-  leadActivities            LeadActivity[]
-  leadNotes                 LeadNote[]
-  assignedLeads             Lead[]                           @relation("LeadAssignedStaff")
-  createdLeads              Lead[]                           @relation("LeadCreatedBy")
-  researchedLeads           Lead[]                           @relation("LeadResearchExecutive")
-  loginLogs                 LoginLog[]
-  notifications             Notification[]
-  proposals                 Proposal[]                       @relation("ProposalSalesStaff")
-  refreshTokens             RefreshToken[]
-  salesTargets              SalesTarget[]
-  monthlyCommissionProgress StaffMonthlyCommissionProgress[]
-  systemLogs                SystemLog[]
-  currentSlab               CommissionSlab?                  @relation(fields: [currentSlabId], references: [id])
-  department                Department?                      @relation(fields: [departmentId], references: [id])
+  id              String       @id @default(uuid())
+  name            String
+  email           String       @unique
+  passwordHash    String
+  role            Role
+  status          UserStatus   @default(ACTIVE)
+  permissions     String[]     @default([])
+  settings        Json?        @default("{}")
+  phone           String?
+  avatarUrl       String?
+  lastLoginAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  refreshTokens        RefreshToken[]
+  assignedLeads         Lead[]              @relation("LeadAssignedStaff")
+  createdLeads          Lead[]              @relation("LeadCreatedBy")
+  proposals              Proposal[]          @relation("ProposalSalesStaff")
+  commissions            Commission[]
+  salesTargets           SalesTarget[]
+  notifications          Notification[]
+  auditLogs              AuditLog[]
+  systemLogs             SystemLog[]
+  loginLogs               LoginLog[]
+  leadNotes               LeadNote[]
+  leadActivities          LeadActivity[]
 
   @@index([role])
-  @@index([status])
-  @@index([departmentId])
   @@map("users")
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
-  userId    String
-  tokenHash String   @unique
-  revoked   Boolean  @default(false)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  userId     String
+  tokenHash  String   @unique
+  revoked    Boolean  @default(false)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("refresh_tokens")

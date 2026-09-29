@@ -26,7 +26,6 @@ const ACTION_LABELS: Record<CrmAction, string> = {
   export: "Export",
   approve: "Approve",
   analytics: "Analytics",
-  manage_authority: "Manage Authority",
 };
 
 export function PermissionMatrix({

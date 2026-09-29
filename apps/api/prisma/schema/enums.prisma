@@ -1,7 +1,7 @@
 enum Role {
   SUPER_ADMIN
-  SALES_STAFF
   ADMIN
+  SALES_STAFF
   MARKETING_TEAM
 }
 
@@ -9,7 +9,6 @@ enum UserStatus {
   ACTIVE
   SUSPENDED
   INVITED
-  INACTIVE
 }
 
 enum LeadStatus {
@@ -24,28 +23,6 @@ enum LeadStatus {
   ACTIVE_PROJECT
   COMPLETED
   LOST
-}
-
-enum ConversionStatus {
-  PENDING
-  CONVERTED
-  REJECTED
-  ON_HOLD
-}
-
-enum ContactMethod {
-  CALL
-  WHATSAPP
-  EMAIL
-  IN_PERSON_MEETING
-  OTHER
-}
-
-enum ClientStatus {
-  ACTIVE
-  INACTIVE
-  ONBOARDING
-  SUSPENDED
 }
 
 enum BillingType {

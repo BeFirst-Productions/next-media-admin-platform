@@ -1,44 +1,33 @@
 model Client {
-  id              String          @id @default(uuid())
-  leadId          String?         @unique
-  companyName     String
-  industry        String?
-  location        String?
-  billingAddress  String?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  clientStatus    ClientStatus    @default(ACTIVE)
-  googleMapsLink  String?
-  notes           String?
-  contactPerson   String?
-  conversionValue Decimal?        @db.Decimal(14, 2)
-  convertedAt     DateTime        @default(now())
-  customClientId  String?         @unique
-  designation     String?
-  email           String?
-  phone           String?
-  whatsapp        String?
-  contacts        ClientContact[]
-  lead            Lead?           @relation(fields: [leadId], references: [id])
-  contracts       Contract[]
-  invoices        Invoice[]
-  payments        Payment[]
-  proposals       Proposal[]
+  id                String   @id @default(uuid())
+  leadId            String?  @unique
+  companyName       String
+  industry          String?
+  location          String?
+  billingAddress    String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  lead      Lead?           @relation(fields: [leadId], references: [id])
+  contacts  ClientContact[]
+  proposals Proposal[]
+  contracts Contract[]
+  invoices  Invoice[]
+  payments  Payment[]
 
   @@map("clients")
 }
 
 model ClientContact {
-  id          String   @id @default(uuid())
-  clientId    String
-  name        String
-  email       String?
-  phone       String?
-  isPrimary   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  designation String?
-  whatsapp    String?
-  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  clientId  String
+  name      String
+  email     String?
+  phone     String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@map("client_contacts")
 }

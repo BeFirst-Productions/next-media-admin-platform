@@ -1,29 +1,31 @@
 model SalesTarget {
-  id              String           @id @default(uuid())
-  staffId         String
-  month           Int
-  year            Int
-  targetAmount    Decimal          @db.Decimal(14, 2)
-  targetLeads     Int              @default(0)
-  targetProposals Int              @default(0)
-  targetDeals     Int              @default(0)
-  createdAt       DateTime         @default(now())
-  staff           User             @relation(fields: [staffId], references: [id])
-  progress        TargetProgress[]
+  id             String   @id @default(uuid())
+  staffId        String
+  month          Int
+  year           Int
+  targetAmount   Decimal  @db.Decimal(14, 2)
+  targetLeads    Int      @default(0)
+  targetProposals Int     @default(0)
+  targetDeals    Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  staff    User             @relation(fields: [staffId], references: [id])
+  progress TargetProgress[]
 
   @@unique([staffId, month, year])
   @@map("sales_targets")
 }
 
 model TargetProgress {
-  id                String      @id @default(uuid())
-  salesTargetId     String
-  achievedAmount    Decimal     @default(0) @db.Decimal(14, 2)
-  achievedLeads     Int         @default(0)
-  achievedProposals Int         @default(0)
-  achievedDeals     Int         @default(0)
-  updatedAt         DateTime    @updatedAt
-  salesTarget       SalesTarget @relation(fields: [salesTargetId], references: [id], onDelete: Cascade)
+  id               String   @id @default(uuid())
+  salesTargetId    String
+  achievedAmount   Decimal  @db.Decimal(14, 2) @default(0)
+  achievedLeads    Int      @default(0)
+  achievedProposals Int     @default(0)
+  achievedDeals    Int      @default(0)
+  updatedAt        DateTime @updatedAt
+
+  salesTarget SalesTarget @relation(fields: [salesTargetId], references: [id], onDelete: Cascade)
 
   @@map("target_progress")
 }
